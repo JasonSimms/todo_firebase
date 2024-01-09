@@ -1,12 +1,20 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import {auth} from './firebase/firebaseconfig';
+
 
 function App() {
+  const handleGoogle = async (e : React.MouseEvent) => {
+    const provider = await new GoogleAuthProvider();
+    return signInWithPopup(auth, provider);
+  }
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <button onClick={handleGoogle}>
+          Sign in with Google
+        </button>
         <p>
           Ahoy there.
         </p>
