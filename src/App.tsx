@@ -3,6 +3,13 @@ import './App.css';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import {auth} from './firebase/firebaseconfig';
 
+import Signup from './components/Signup';
+import  AuthProvider  from './contexts/AuthContext';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+
 
 function App() {
 
@@ -13,24 +20,18 @@ function App() {
 
  
   return (
+    <AuthProvider>
+
     <div className="App">
-      <header className="App-header">
+      <Signup/>
         <button onClick={handleGoogle}>
           Sign in with Google
         </button>
         <p>
           Ahoy there. 
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
     </div>
+    </AuthProvider>
   );
 }
 
