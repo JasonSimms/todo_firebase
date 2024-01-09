@@ -5,10 +5,13 @@ import {auth} from './firebase/firebaseconfig';
 
 
 function App() {
+
   const handleGoogle = async (e : React.MouseEvent) => {
     const provider = await new GoogleAuthProvider();
     return signInWithPopup(auth, provider);
   }
+
+ 
   return (
     <div className="App">
       <header className="App-header">
@@ -16,7 +19,7 @@ function App() {
           Sign in with Google
         </button>
         <p>
-          Ahoy there.
+          Ahoy there. 
         </p>
         <a
           className="App-link"

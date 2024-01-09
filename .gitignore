@@ -24,3 +24,6 @@ yarn-error.log*
 
 # Ignore the .env file
 .env
+
+# Ignore .firebase cache
+/.firebase
