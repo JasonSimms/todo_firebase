@@ -18,6 +18,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const defaultTheme = createTheme();
 
 export default function Signup() {
+  const { signup } = useAuth();
 
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -26,7 +27,8 @@ export default function Signup() {
       console.log({
         email: data.get('email'),
         password: data.get('password'),
-      });
+      })
+      signup(data.get('email'), data.get('password'));
     };
   return (
     <ThemeProvider theme={defaultTheme}>
