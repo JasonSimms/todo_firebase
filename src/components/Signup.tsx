@@ -24,11 +24,9 @@ export default function Signup() {
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
-      console.log({
-        email: data.get('email'),
-        password: data.get('password'),
-      })
-      signup(data.get('email'), data.get('password'));
+      const email = data.get('email') as string;
+      const password = data.get('password') as string;
+      signup(email, password);
     };
   return (
     <ThemeProvider theme={defaultTheme}>
