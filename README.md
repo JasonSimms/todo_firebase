@@ -2,7 +2,6 @@
 
 [Link](https://todo-firebase-1302f.web.app/){:target="_blank"}
 
-
 ### `npm start`
 
 Runs the app in the development mode.\
@@ -16,3 +15,10 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.\
 See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
+##TODO:
+- [x] Setup Firebase Hosting
+- [ ] Connect Firebase Auth Functionality
+- [ ] Define Chore Model
+- [ ] Define User Model
+- [ ] Draft UX
+- [ ] Connect Firestore

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect, createContext, ReactNode } from 'react';
 import { auth } from '../firebase/firebaseconfig';
-import { createUserWithEmailAndPassword, Auth } from 'firebase/auth';
+import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword  } from 'firebase/auth';
 
 interface User {
   uid: string;
@@ -9,7 +9,7 @@ interface User {
 
 interface AuthContextProps {
   currentUser: User | null;
-  // login: (email: string, password: string) => Promise<any>;
+  login: (email: string, password: string) => Promise<any>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   // resetPassword: (email: string) => Promise<void>;
@@ -52,9 +52,23 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     }
   }
 
-  // function login(email: string, password: string): Promise<any> {
-  //   return auth.signInWithEmailAndPassword(email, password);
-  // }
+  async function login(email: string, password: string): Promise<any> {
+    // signsignInWithEmailAndPassword
+    console.log('initiating login...');
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      console.log(user);
+    } catch (error:unknown) {
+      if (error instanceof Error) {
+        // Use the specific Error type
+        console.error('Sign-up error:', error.message);
+      } else {
+        // Fallback for other types of errors
+        console.error('An error occurred during sign-up:', error);
+      }
+    }
+  }
 
   function logout(): Promise<void> {
     return auth.signOut();
@@ -83,7 +97,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
 
   const value: AuthContextProps = {
     currentUser,
-    // login,
+    login,
     signup,
     logout,
     // resetPassword,
