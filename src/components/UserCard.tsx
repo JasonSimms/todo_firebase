@@ -29,8 +29,6 @@ const UserCard: React.FC = () => {
   
   const { currentUser } = useAuth();
 
-  console.log('beep?',currentUser);
-
   const db = useContext(FirestoreContext);
 
   const getUsers = async (event: React.MouseEvent<HTMLButtonElement>) => {

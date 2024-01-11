@@ -8,7 +8,7 @@ import TaskTable from './components/TaskTable';
 import UserCard from './components/UserCard';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { FirebaseService } from './services/FirebaseService';
+import { FirebaseService } from './services/FirestoreServices';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -20,14 +20,15 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { currentUser } = useAuth(); // Get the current user from your AuthContext
+  // const { currentUser } = useAuth(); // Get the current user from your AuthContext
 
-  return currentUser ? <>{children}</> : <Signup />;
+  // return currentUser ? <>{children}</> : <Signup />;
+  return <>{children}</>
 };
 
 const handleClick = async() =>{
   const firebaseService = new FirebaseService() ;
-  firebaseService.createUser('email', 'password');
+  firebaseService.getUserByEmail('simmsthecoder@gmail.com');
 }
 
 const App: React.FC = () => {

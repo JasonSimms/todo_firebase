@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, createContext, ReactNode } from 'react';
 import { auth } from '../firebase/firebaseconfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { FirebaseService } from '../services/FirebaseService';
+import { FirebaseService } from '../services/FirestoreServices';
 
 // User object model needed only for the Firebase Auth Purposes
 interface FireBaseAuthUser {
