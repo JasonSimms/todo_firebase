@@ -1,6 +1,6 @@
-# Live hosted by Firebase
+### Live hosted by Firebase
 
-[Link](https://todo-firebase-1302f.web.app/){:target="_blank"}
+[Link](https://todo-firebase-1302f.web.app/)
 
 ### `npm start`
 

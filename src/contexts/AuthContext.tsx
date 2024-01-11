@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect, createContext, ReactNode } from 'react';
 import { auth } from '../firebase/firebaseconfig';
 import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword  } from 'firebase/auth';
+import { createUser } from './FirestoreContext';
 
 interface User {
   uid: string;
@@ -41,6 +42,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log(user);
+      await createUser(email,user.uid);
     } catch (error:unknown) {
       if (error instanceof Error) {
         // Use the specific Error type

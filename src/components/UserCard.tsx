@@ -5,12 +5,14 @@ import { collection, getDocs, QueryDocumentSnapshot, FirestoreDataConverter,With
 
 interface User {
   email: string;
+  uid?: string;
 }
+
 
 const userConverter: FirestoreDataConverter<User> = {
   toFirestore: (user: WithFieldValue<User>) => {
     let userCopy = {...user};
-    // delete userCopy.id;
+    delete userCopy.uid;
     return userCopy;
   },
   fromFirestore: (snapshot: QueryDocumentSnapshot, options?: SnapshotOptions) => {
@@ -38,7 +40,7 @@ const UserCard: React.FC = () => {
     
     querySnapshot.forEach((doc) => {
       const user: User = doc.data();
-      console.log(`${doc.id} => ${user.email}`);
+      console.log(`${doc.id} => ${JSON.stringify(user)}`);
      });
    }
 
