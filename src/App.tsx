@@ -34,7 +34,7 @@ const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
-        <button onClick={handleClick}>Click here</button>
+        <button onClick={handleClick}>Debug: Click here</button>
         <Dashboard />
         <ProtectedRoute>
           <Routes>
