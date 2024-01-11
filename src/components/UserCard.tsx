@@ -19,17 +19,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 const defaultTheme = createTheme();
 
 
-
-
 const UserCard: React.FC = () => {
   const user = useAuth().currentUser;
-  // console.log(userDoc);
-  // const user = {
-  //   email: 'someEmail',
-  //   displayName: 'someDisplayName',
-  //   household: "simms",
-  //   completedTasks: [{ title: 'omg', date: 1234 }]
-  // }
 
   const [displayedUser, setdDisplayedUser] = useState(user);
 
@@ -123,15 +114,4 @@ const UserCard: React.FC = () => {
   );
 };
 
-
-
-
-
-//  return (
-//   <div>
-//     <h1>UserCard</h1>
-//     <p>{JSON.stringify(currentUser)}</p>
-//   </div>
-//  );
-// }
 export default UserCard;
