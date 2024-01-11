@@ -2,4 +2,7 @@
 export interface User {
         uid: string;
         email: string;
+        household?: string;
+        displayName? : string;
+        completedTasks? : []
    }
