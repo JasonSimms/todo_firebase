@@ -2,16 +2,12 @@ import { useContext, useState, useEffect, createContext, ReactNode } from 'react
 import { auth } from '../firebase/firebaseconfig';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseService } from '../services/FirestoreServices';
+import { User } from '../models/User';
 
-// User object model needed only for the Firebase Auth Purposes
-interface FireBaseAuthUser {
-  uid: string;
-  email: string;
-}
 
 // Context for the Auth Provider
 interface AuthContextProps {
-  currentUser: FireBaseAuthUser | null;
+  currentUser: User | null;
   login: (email: string, password: string) => Promise<any>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -38,7 +34,7 @@ export function useAuth(): AuthContextProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
-  const [currentUser, setCurrentUser] = useState<FireBaseAuthUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   /**

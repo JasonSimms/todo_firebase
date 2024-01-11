@@ -19,15 +19,15 @@ interface ProtectedRouteProps {
   children: ReactNode;
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  // const { currentUser } = useAuth(); // Get the current user from your AuthContext
 
-  // return currentUser ? <>{children}</> : <Signup />;
-  return <>{children}</>
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { currentUser } = useAuth(); // Get the current user from your AuthContext
+  return currentUser ? <>{children}</> : <Signup />;
+  // return <>{children}</>
 };
 
-const handleClick = async() =>{
-  const firebaseService = new FirebaseService() ;
+const handleClick = async () => {
+  const firebaseService = new FirebaseService();
   firebaseService.getUserByEmail('simmsthecoder@gmail.com');
 }
 
@@ -42,12 +42,12 @@ const App: React.FC = () => {
             <Route path="/"><>You are logged in!</></Route>
             <Route path="newtask" Component={NewTask} />
             <Route path="tasks" Component={TaskTable} />
-            <Route path="user" Component={UserCard} />
+            <Route path="user" element={<UserCard />} />
           </Routes>
         </ProtectedRoute>
       </Router>
     </AuthProvider>
   );
- }
+}
 
 export default App;
