@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect, createContext, ReactNode } from 'react';
 import { auth } from '../firebase/firebaseconfig';
 import { createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword  } from 'firebase/auth';
-import { createUser } from './FirestoreContext';
+import {FirebaseService} from '../services/FirebaseService';
 
 interface User {
   uid: string;
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       console.log(user);
-      await createUser(email,user.uid);
+      // await createUser(email,user.uid);
     } catch (error:unknown) {
       if (error instanceof Error) {
         // Use the specific Error type
@@ -57,19 +57,21 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
   async function login(email: string, password: string): Promise<any> {
     // signsignInWithEmailAndPassword
     console.log('initiating login...');
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log(user);
-    } catch (error:unknown) {
-      if (error instanceof Error) {
-        // Use the specific Error type
-        console.error('Sign-up error:', error.message);
-      } else {
-        // Fallback for other types of errors
-        console.error('An error occurred during sign-up:', error);
-      }
-    }
+    const firebaseService = new FirebaseService() ;
+    firebaseService.createUser('email', 'password');
+    // try {
+    //   const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    //   const user = userCredential.user;
+    //   console.log(user);
+    // } catch (error:unknown) {
+    //   if (error instanceof Error) {
+    //     // Use the specific Error type
+    //     console.error('Sign-up error:', error.message);
+    //   } else {
+    //     // Fallback for other types of errors
+    //     console.error('An error occurred during sign-up:', error);
+    //   }
+    
   }
 
   function logout(): Promise<void> {

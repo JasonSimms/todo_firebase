@@ -8,6 +8,7 @@ import TaskTable from './components/TaskTable';
 import UserCard from './components/UserCard';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { FirebaseService } from './services/FirebaseService';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -24,22 +25,28 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   return currentUser ? <>{children}</> : <Signup />;
 };
 
+const handleClick = async() =>{
+  const firebaseService = new FirebaseService() ;
+  firebaseService.createUser('email', 'password');
+}
+
 const App: React.FC = () => {
   return (
     <AuthProvider>
-        <Router>
-          <Dashboard />
-      <ProtectedRoute>
+      <Router>
+        <button onClick={handleClick}>Click here</button>
+        <Dashboard />
+        <ProtectedRoute>
           <Routes>
             <Route path="/"><>You are logged in!</></Route>
             <Route path="newtask" Component={NewTask} />
             <Route path="tasks" Component={TaskTable} />
             <Route path="user" Component={UserCard} />
           </Routes>
-      </ProtectedRoute>
-        </Router>
+        </ProtectedRoute>
+      </Router>
     </AuthProvider>
   );
-}
+ }
 
 export default App;
