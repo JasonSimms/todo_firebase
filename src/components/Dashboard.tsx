@@ -1,3 +1,8 @@
+/**
+ * This file defines the Dashboard component.
+ * It includes the logic for handling user authentication, navigation, and rendering the dashboard UI.
+ */
+
 import * as React from 'react';
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from 'react-router-dom';
@@ -17,35 +22,92 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
 
-
-const Dashboard: React.FC = () => {
-   const { currentUser, logout } = useAuth()
+// Define the structure for a page
+interface Page {
+   label: string;
+   action?: () => void;
+  }
+  
+  // Main Dashboard component
+  const Dashboard: React.FC = () => {
+   // Get the current user and logout function from AuthContext
+   const { currentUser, logout } = useAuth();
+   // Get the navigate function from react-router-dom
    const navigate = useNavigate();
-   const pages = ['Tasks', 'NewTask', 'Household'];
-   const settings = [{ name: 'Pofile', path: '/user', action: ()=>console.log('boop')}, { name: 'Logout', path: '/logout', action: logout }];
-   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
-
-   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorElNav(event.currentTarget);
-   };
-   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-      setAnchorElUser(event.currentTarget);
-   };
-
-   const handleCloseNavMenu = () => {
-      setAnchorElNav(null);
-   };
-
-   const handleCloseUserMenu = () => {
-      setAnchorElUser(null);
-   };
-
+  
+   // Function to handle logout
    const handleLogout = async () => {
-      await logout();
-      navigate('/');
+    await logout();
+    navigate('/');
+   };
+  
+   // Array of pages with their respective actions
+   const pages: Page[] = [
+    { label: 'New Task', action: () => navigate('/newtasks') },
+    { label: 'Complete a Task', action: () => navigate('/tasks') },
+    { label: 'Household', action: () => navigate('/household') },
+   ];
+  
+   // Array of settings with their respective actions
+   const settings = [
+    { name: 'Profile', action: () => navigate('/user') },
+    { name: 'Logout', action: handleLogout },
+   ];
+  
+   // State for managing the navigation menu
+   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+   // State for managing the user menu
+   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  
+   // Function to open the navigation menu
+   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElNav(event.currentTarget);
+   };
+  
+   // Function to open the user menu
+   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+   };
+  
+   // Function to close the navigation menu
+   const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+   };
+  
+   // Function to close the user menu
+   const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
    };
 
+   // Support the Avatar Icon with a random color and unique letters per email.
+   function stringToColor(string: string) {
+      let hash = 0;
+      let i;
+
+      /* eslint-disable no-bitwise */
+      for (i = 0; i < string.length; i += 1) {
+         hash = string.charCodeAt(i) + ((hash << 5) - hash);
+      }
+
+      let color = '#';
+
+      for (i = 0; i < 3; i += 1) {
+         const value = (hash >> (i * 8)) & 0xff;
+         color += `00${value.toString(16)}`.slice(-2);
+      }
+      /* eslint-enable no-bitwise */
+
+      return color;
+   }
+
+   function stringAvatar(name: string) {
+      return {
+         sx: {
+            bgcolor: stringToColor(name),
+         },
+         children: `${name[0]}${name[1]}`,
+      };
+   }
 
 
    return (
@@ -68,7 +130,7 @@ const Dashboard: React.FC = () => {
                      textDecoration: 'none',
                   }}
                >
-                  LOGO
+                  ChoreMaster
                </Typography>
 
                <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -101,7 +163,7 @@ const Dashboard: React.FC = () => {
                      }}
                   >
                      {pages.map((page) => (
-                        <MenuItem key={page} onClick={handleCloseNavMenu}>
+                        <MenuItem key={page.label} onClick={handleCloseNavMenu}>
                            <Typography textAlign="center"></Typography>
                         </MenuItem>
                      ))}
@@ -124,16 +186,15 @@ const Dashboard: React.FC = () => {
                      textDecoration: 'none',
                   }}
                >
-                  LOGO
                </Typography>
                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                   {pages.map((page) => (
                      <Button
-                        key={page}
-                        onClick={() => { handleCloseNavMenu(); navigate(page); }}
+                        key={page.label}
+                        onClick={() => { handleCloseNavMenu(); if (page.action) page.action(); }}
                         sx={{ my: 2, color: 'white', display: 'block' }}
                      >
-                        {page}
+                        {page.label}
                      </Button>
                   ))}
                </Box>
@@ -141,7 +202,7 @@ const Dashboard: React.FC = () => {
                <Box sx={{ flexGrow: 0 }}>
                   <Tooltip title="Open settings">
                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                        {currentUser ? <Avatar {...stringAvatar(currentUser.email)} /> : <>LOGIN</>}
                      </IconButton>
                   </Tooltip>
                   <Menu
@@ -161,7 +222,7 @@ const Dashboard: React.FC = () => {
                      onClose={handleCloseUserMenu}
                   >
                      {settings.map((setting) => (
-                        <MenuItem key={setting.name} onClick={() => { handleCloseUserMenu(); setting.action(); navigate(setting.path); }}>
+                        <MenuItem key={setting.name} onClick={() => { handleCloseUserMenu(); setting.action(); }}>
                            <Typography textAlign="center">{setting.name}</Typography>
                         </MenuItem>
                      ))}
@@ -172,28 +233,5 @@ const Dashboard: React.FC = () => {
       </AppBar>
    );
 }
-
-
-// return (
-//    <Stack direction="row" spacing={2}>
-//       <Button color="secondary" disabled={!currentUser}>Secondary</Button>
-//       <Button variant="contained" color="success" disabled={!currentUser} onClick={() => navigate('/newtask')}>
-//          New
-//       </Button>
-//       <Button variant="outlined" color="error" disabled={!currentUser} onClick={() => navigate('/tasks')}>
-//          View Tasks
-//       </Button>
-//       <Button variant="outlined" color="error" disabled={!currentUser} onClick={() => navigate('/user')}>
-//          View User
-//       </Button>
-//       {currentUser ? <>
-//          <h2>User: {currentUser && currentUser.email || null} </h2>
-//          <Button onClick={handleLogout}>
-//             Sign out
-//          </Button>
-//       </> : <>please sign in</>}
-//    </Stack>
-// );
-// }
 
 export default Dashboard;
