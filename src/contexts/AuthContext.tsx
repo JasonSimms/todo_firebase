@@ -1,8 +1,10 @@
 import { useContext, useState, useEffect, createContext, ReactNode } from 'react';
 import { auth } from '../firebase/firebaseconfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
 import { FirebaseService } from '../services/FirestoreServices';
 import { User } from '../models/User';
+import { getAuth } from "firebase/auth";
+import * as admin from 'firebase-admin';
 
 
 // Context for the Auth Provider
@@ -133,4 +135,38 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
       {!loading && children}
     </AuthContext.Provider>
   );
+}
+
+export function handlePasswordReset() {
+const actionCodeSettings = {
+  // URL you want to redirect back to. The domain (www.example.com) for
+  // this URL must be whitelisted in the Firebase Console.
+  url: 'https://www.example.com/checkout?cartId=1234',
+  // This must be true for email link sign-in.
+  handleCodeInApp: true,
+  iOS: {
+    bundleId: 'com.example.ios',
+  },
+  android: {
+    packageName: 'com.example.android',
+    installApp: true,
+    minimumVersion: '12',
+  },
+  // FDL custom domain.
+  dynamicLinkDomain: 'coolapp.page.link',
+};
+
+// Admin SDK API to generate the password reset link.
+// const userEmail = email;
+console.log('Not Yet Implemented')
+// admin.auth().generatePasswordResetLink('simmsthecoder@gmail.com', actionCodeSettings)
+//   .then((link:string) => {
+//     // Construct password reset email template, embed the link and send
+//     // using custom SMTP server.
+//     console.log('results,',link);
+//     // return sendCustomPasswordResetEmail(userEmail, displayName, link);
+//   })
+//   .catch((error:any) => {
+//     console.error(error)// Some error occurred.
+//   });
 }

@@ -202,7 +202,7 @@ interface Page {
                <Box sx={{ flexGrow: 0 }}>
                   <Tooltip title="Open settings">
                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        {currentUser ? <Avatar {...stringAvatar(currentUser.email)} /> : <>LOGIN</>}
+                        {currentUser ? <Avatar {...stringAvatar(currentUser.email)} /> : <></>}
                      </IconButton>
                   </Tooltip>
                   <Menu

@@ -1,50 +1,68 @@
 import React, { ReactNode } from 'react';
 import './App.css';
 
+// Import necessary components
 import Dashboard from './components/Dashboard';
 import NewTask from './components/NewTask';
-import Signup from './components/Signup';
+import SignIn from './components/SignIn';
+import SignUp from './components/SignUp';
 import TaskTable from './components/TaskTable';
 import UserCard from './components/UserCard';
+import Footer from './components/Footer';
+
+// Import necessary hooks and services
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { FirebaseService } from './services/FirestoreServices';
 
+// Import necessary fonts
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
+// Define the props for the ProtectedRoute component
 interface ProtectedRouteProps {
   children: ReactNode;
+  unprotectedPaths?: string[];
 }
 
-
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+// Define the ProtectedRoute component
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, unprotectedPaths = [] }) => {
   const { currentUser } = useAuth(); // Get the current user from your AuthContext
-  return currentUser ? <>{children}</> : <Signup />;
-  // return <>{children}</>
+  const location = useLocation();
+  // If the user is not authenticated and the current path is not in the unprotectedPaths array, render the SignIn component
+  if (!currentUser && !unprotectedPaths.includes(location.pathname)) {
+    return <SignIn />;
+  }
+  // Otherwise, render the children
+  return <>{children}</>;
 };
 
+// Define the DEBUG handleClick function
 const handleClick = async () => {
   const firebaseService = new FirebaseService();
   firebaseService.getUserByEmail('simmsthecoder@gmail.com');
 }
 
+// Define the App component
 const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
         <button onClick={handleClick}>Debug: Click here</button>
         <Dashboard />
-        <ProtectedRoute>
+        <ProtectedRoute unprotectedPaths={['/signup', '/login']}>
           <Routes>
+            <Route path="signup" Component={SignUp} />
+            <Route path="/login" Component={SignIn} />
             <Route path="/"><>You are logged in!</></Route>
             <Route path="newtask" Component={NewTask} />
             <Route path="tasks" Component={TaskTable} />
             <Route path="user" element={<UserCard />} />
           </Routes>
         </ProtectedRoute>
+        <Footer />
       </Router>
     </AuthProvider>
   );
