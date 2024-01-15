@@ -41,6 +41,7 @@ export default function Signup() {
   const handleLogin = async (email: string, password: string) => {
     try {
       await login(email, password);
+      navigate('/tasks');
       // Handle successful login
     } catch (error) {
       // Handle login errors
@@ -54,7 +55,7 @@ export default function Signup() {
     const password = data.get('password') as string;
 
     if (action === 'signup') {
-      handleSignup();
+      handleSignup();  //deprecated by new signup component.
     } else if (action === 'login') {
       handleLogin(email, password);
     }

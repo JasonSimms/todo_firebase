@@ -18,8 +18,9 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 ##TODO:
 - [x] Setup Firebase Hosting
 - [x] Connect Firebase Auth Functionality
-- [x] Connect Firestore
+- [x] Connect Firestore with basic CRUD
 - [ ] Define Task Model
-- [ ] Define User Model
+- [x] Define User Model
+- [x] Define CompletedTask Model
 - [ ] Refine CRUD methods
 - [ ] Draft UX

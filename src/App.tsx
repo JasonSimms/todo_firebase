@@ -3,7 +3,7 @@ import './App.css';
 
 // Import necessary components
 import Dashboard from './components/Dashboard';
-import NewTask from './components/NewTask';
+import NewTask from './components/NewTaskForm';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import TaskTable from './components/TaskTable';
