@@ -14,6 +14,7 @@ import Footer from './components/Footer';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import { FirebaseService } from './services/FirestoreServices';
+import LocalizationContext from './contexts/LocalizationContext';
 
 // Import necessary fonts
 import '@fontsource/roboto/300.css';
@@ -49,21 +50,24 @@ const handleClick = async () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <Router>
-        <button onClick={handleClick}>Debug: Click here</button>
-        <Dashboard />
-        <ProtectedRoute unprotectedPaths={['/signup', '/login']}>
-          <Routes>
-            <Route path="signup" Component={SignUp} />
-            <Route path="/login" Component={SignIn} />
-            <Route path="/"><>You are logged in!</></Route>
-            <Route path="newtask" Component={NewTask} />
-            <Route path="tasks" Component={TaskTable} />
-            <Route path="user" element={<UserCard />} />
-          </Routes>
-        </ProtectedRoute>
-        <Footer />
-      </Router>
+      <LocalizationContext>
+        <Router>
+          <button onClick={handleClick}>Debug: Click here</button>
+          <Dashboard />
+          <ProtectedRoute unprotectedPaths={['/signup', '/login']}>
+            <Routes>
+              <Route path="signup" Component={SignUp} />
+              <Route path="/login" Component={SignIn} />
+              <Route path="/"><>You are logged in!</></Route>
+              <Route path="newtask" Component={NewTask} />
+              <Route path="tasks" Component={TaskTable} />
+              <Route path="user" element={<UserCard />} />
+            </Routes>
+          </ProtectedRoute>
+          <Footer />
+        </Router>
+      </LocalizationContext>
+
     </AuthProvider>
   );
 }

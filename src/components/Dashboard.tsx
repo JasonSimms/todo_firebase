@@ -43,7 +43,7 @@ interface Page {
   
    // Array of pages with their respective actions
    const pages: Page[] = [
-    { label: 'New Task', action: () => navigate('/newtasks') },
+    { label: 'New Task', action: () => navigate('/newtask') },
     { label: 'Complete a Task', action: () => navigate('/tasks') },
     { label: 'Household', action: () => navigate('/household') },
    ];
