@@ -7,5 +7,7 @@ export interface Task {
     assignedTo?: string;
     frequency?: string;
     description?: string;
+    taskType?: string;
+    dateAssigned?: string;
     // other fields...
    }

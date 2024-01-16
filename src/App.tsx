@@ -52,7 +52,7 @@ const App: React.FC = () => {
     <AuthProvider>
       <LocalizationContext>
         <Router>
-          <button onClick={handleClick}>Debug: Click here</button>
+          {/* <button onClick={handleClick}>Debug: Click here</button> */}
           <Dashboard />
           <ProtectedRoute unprotectedPaths={['/signup', '/login']}>
             <Routes>
