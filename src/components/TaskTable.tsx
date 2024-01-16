@@ -1,12 +1,100 @@
-import React from 'react';
+/**
+ * TaskTable component.
+ *
+ * This component displays all Tasks created for a household.
+ * It should allow the view to learn when the last time it was completed and select it for completion.
+ * 
+ */
+
+import React, { useState, useEffect } from 'react';
+import { CircularProgress } from '@mui/material';
+import { FirebaseService } from '../services/FirestoreServices';
+
+import Box from '@mui/material/Box';
+
+
+//Table imports
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+
 
 const TaskTable: React.FC = () => {
+ const [tasksData, setTasksData] = useState<any[]>([]);
+ const [loading, setLoading] = useState<boolean>(true);
+
+ useEffect(() => {
+  const fetchTasks = async () => {
+    const firebaseService = new FirebaseService();
+    const data = await firebaseService.getAllTasks();
+    setTasksData(data);
+    setLoading(false);
+  };
+
+  fetchTasks();
+ }, []);
+
+
+ //TODO replace this with real data.
+ function createData(
+  name: string,
+  calories: number,
+  fat: number,
+  carbs: number,
+  protein: number,
+) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+];
 
  return (
-  <div>
+  <>
+  <Box m={2}>
     <h1>view tasks / completed / outstanding / deleted</h1>
-  </div>
+    {loading ? <CircularProgress /> : JSON.stringify(tasksData)}
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell align="right">Calories</TableCell>
+            <TableCell align="right">Fat&nbsp;(g)</TableCell>
+            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
+            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map((row) => (
+            <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.name}
+              </TableCell>
+              <TableCell align="right">{row.calories}</TableCell>
+              <TableCell align="right">{row.fat}</TableCell>
+              <TableCell align="right">{row.carbs}</TableCell>
+              <TableCell align="right">{row.protein}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
+  </>
  );
-}
+};
 
 export default TaskTable;

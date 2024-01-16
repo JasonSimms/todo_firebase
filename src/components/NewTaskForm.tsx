@@ -23,6 +23,16 @@ import Box from '@mui/material/Box';
 //Interface imports
 import { Task } from '../models/Task';
 
+//Service imports
+import { FirebaseService } from '../services/FirestoreServices';
+import { useAuth } from '../contexts/AuthContext';
+
+//Service setup
+const submitTask = async (task: Task) => {
+  const firebaseService = new FirebaseService();
+  firebaseService.createTask(task);
+}
+
 
 //Provide the values for the Slider Component
 const marks = [
@@ -62,9 +72,12 @@ const marks = [
  * @param assignedDate - The date when the task was assigned.
  * @returns A new task object with the processed data.
  */
-const preProcessTaskForm = (title: string, description: string, assignedTo: string, taskType: string, frequency: number, assignedDate: Dayjs) => {
+const preProcessTaskForm = (title: string, description: string, assignedTo: string, taskType: string, frequency: number, assignedDate: Dayjs, createdBy: string) => {
+
+
+
   const newTask: Task = {
-    title, description, assignedTo, taskType,
+    title, description, assignedTo, taskType, createdBy
   }
 
   //return the label from the slider instead of a numerical value.
@@ -79,6 +92,10 @@ const preProcessTaskForm = (title: string, description: string, assignedTo: stri
 }
 
 export default function NewTaskForm() {
+  const { currentUser } = useAuth();
+
+
+
   //Form state
   const [datePickerValue, setDatePickerValue] = React.useState<Dayjs>((dayjs().add(1, 'day')));
   const [assignedToValue, setAssignedToValue] = React.useState<string>('self');
@@ -88,14 +105,19 @@ export default function NewTaskForm() {
   const [frequencyValue, setFrequencyValue] = React.useState<number>(20);
 
   //Handle submission
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (title !== null && description !== null) {
-      const newForm = preProcessTaskForm(title, description, assignedToValue, taskType, frequencyValue, datePickerValue);
-      console.log(newForm);  //TODO send to 'backend'
+    // Get the current user and logout function from AuthContext
+    if (!currentUser) throw Error('no user found this should not be possible');
+    const createdBy = currentUser.email //todo support displayname
+
+    if (title !== null && description !== null && createdBy !== undefined) {
+      const newForm = preProcessTaskForm(title, description, assignedToValue, taskType, frequencyValue, datePickerValue, createdBy);
+      const result = await submitTask(newForm);
+      console.log('result!', result)
     } else {
-      console.error('Title or Description is null');
+      console.error('Title, createdBy or Description is null');
     }
   }
 

@@ -116,16 +116,17 @@ export class FirebaseService {
     /**
      * Creates a record of Task
      * 
-     * @param title string
+     * @param task task object from front end conforming to the interface
      * 
      */
-    async createTask(title: string): Promise<void> {
+    async createTask(task: Task): Promise<void> {
         const taskCollectionRef = collection(db, 'tasks');
         try {
             addDoc(taskCollectionRef, {
-               title
+               task
             }).then((res) => {
-                console.log('new task doc created!')
+                console.log('new task doc created!',res)
+
             })
         } catch (e) {
             console.error(e);
