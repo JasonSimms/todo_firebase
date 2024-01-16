@@ -77,7 +77,8 @@ const preProcessTaskForm = (title: string, description: string, assignedTo: stri
 
 
   const newTask: Task = {
-    title, description, assignedTo, taskType, createdBy
+    title, description, assignedTo, taskType, createdBy,
+    dateCreated: new Date().toISOString(),
   }
 
   //return the label from the slider instead of a numerical value.

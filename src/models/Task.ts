@@ -9,5 +9,6 @@ export interface Task {
     description?: string;
     taskType?: string;
     dateAssigned?: string;
+    dateCreated: string;
     // other fields...
    }

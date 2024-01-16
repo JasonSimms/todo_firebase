@@ -104,7 +104,7 @@ export class FirebaseService {
         try {
             const tasksArray: Task[] = [];
             querySnapshot.forEach((doc: QueryDocumentSnapshot) => {
-                tasksArray.push(doc.data() as Task)
+                tasksArray.push(doc.data().task as Task)
             });
             return tasksArray;
         }

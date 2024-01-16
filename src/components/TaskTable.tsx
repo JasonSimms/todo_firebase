@@ -6,14 +6,11 @@
  * 
  */
 
-import React, { useState, useEffect } from 'react';
-import { CircularProgress } from '@mui/material';
+import React, { useState, useEffect, useCallback } from 'react';
 import { FirebaseService } from '../services/FirestoreServices';
 
-import Box from '@mui/material/Box';
-
-
 //Table imports
+import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -22,79 +19,97 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+//Dialog Imports
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContentText from '@mui/material/DialogContentText';
+
+//Interface
+import { Task } from '../models/Task';
+
 
 const TaskTable: React.FC = () => {
- const [tasksData, setTasksData] = useState<any[]>([]);
- const [loading, setLoading] = useState<boolean>(true);
+  //state management
+  const [tasksData, setTasksData] = useState<Task[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [selectedRow, setSelectedRow] = useState<Task>();
+  const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
- useEffect(() => {
-  const fetchTasks = async () => {
+  //get data for the table
+  const fetchTasks = useCallback(async () => {
     const firebaseService = new FirebaseService();
-    const data = await firebaseService.getAllTasks();
-    setTasksData(data);
-    setLoading(false);
-  };
+    const data = await firebaseService.getAllTasks(); //TODO add error handling
+    if (data) {
+      setTasksData(data);
+      setLoading(false);
+    } else console.error('No data from fetchTasks!')
+  }, []);
 
-  fetchTasks();
- }, []);
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
-
- //TODO replace this with real data.
- function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
- return (
-  <>
-  <Box m={2}>
-    <h1>view tasks / completed / outstanding / deleted</h1>
-    {loading ? <CircularProgress /> : JSON.stringify(tasksData)}
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  </Box>
-  </>
- );
+  return (
+    <>
+      <Box m={2}>
+        {/* {loading ? <CircularProgress /> : JSON.stringify(tasksData)} */}
+        <Dialog
+          open={dialogOpen}
+          onClose={() => setDialogOpen(false)}
+          aria-describedby="alert-dialog-slide-description"
+        >
+          <DialogTitle>Mark {selectedRow && selectedRow.title} as completed?</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              {selectedRow && selectedRow.description}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setDialogOpen(false)}>Yes</Button>
+            <Button onClick={() => setDialogOpen(false)}>No</Button>
+          </DialogActions>
+        </Dialog>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table" stickyHeader >
+            <TableHead>
+              <TableRow>
+                <TableCell>Task</TableCell>
+                <TableCell align="center">Description</TableCell>
+                <TableCell align="right">Frequency</TableCell>
+                <TableCell align="right">Type</TableCell>
+                <TableCell align="right">Assigned&nbsp;To</TableCell>
+                <TableCell align="right">Created&nbsp;by</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {tasksData.map((row) => (
+                <TableRow
+                  key={row.title}
+                  onClick={() => {
+                    setSelectedRow(row)
+                    setDialogOpen(true)
+                  }}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.title}
+                  </TableCell>
+                  <TableCell align="center">{row.description}</TableCell>
+                  <TableCell align="right">{row.frequency}</TableCell>
+                  <TableCell align="right">{row.taskType}</TableCell>
+                  <TableCell align="right">{row.assignedTo}</TableCell>
+                  <TableCell align="right">{row.createdBy}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </>
+  );
 };
 
 export default TaskTable;
