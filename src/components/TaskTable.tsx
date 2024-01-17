@@ -8,6 +8,8 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { FirebaseService } from '../services/FirestoreServices';
+import {completeTask} from '../services/TaskUtils';
+
 
 //Table imports
 import Box from '@mui/material/Box';
@@ -58,7 +60,7 @@ const TaskTable: React.FC = () => {
         {/* {loading ? <CircularProgress /> : JSON.stringify(tasksData)} */}
         <Dialog
           open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
+          // onClose={() => setDialogOpen(false)}
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle>Mark {selectedRow && selectedRow.title} as completed?</DialogTitle>
@@ -68,7 +70,11 @@ const TaskTable: React.FC = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setDialogOpen(false)}>Yes</Button>
+            <Button onClick={() => {
+              selectedRow?.id && completeTask(selectedRow.id)
+              setDialogOpen(false)
+            }
+            }>Yes</Button>
             <Button onClick={() => setDialogOpen(false)}>No</Button>
           </DialogActions>
         </Dialog>
@@ -88,7 +94,7 @@ const TaskTable: React.FC = () => {
               {tasksData.map((row) => (
                 <TableRow
                   key={row.title}
-                  onClick={() => {
+                  onClick={(e) => {
                     setSelectedRow(row)
                     setDialogOpen(true)
                   }}

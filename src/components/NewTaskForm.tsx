@@ -26,9 +26,10 @@ import { Task } from '../models/Task';
 //Service imports
 import { FirebaseService } from '../services/FirestoreServices';
 import { useAuth } from '../contexts/AuthContext';
+import {completeTask} from '../services/TaskUtils';
 
 //Service setup
-const submitTask = async (task: Task) => {
+const submitTask = async (task: Task) => {  //todo remove firebaseServices and migrate to utils.
   const firebaseService = new FirebaseService();
   firebaseService.createTask(task);
 }

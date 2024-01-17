@@ -104,7 +104,9 @@ export class FirebaseService {
         try {
             const tasksArray: Task[] = [];
             querySnapshot.forEach((doc: QueryDocumentSnapshot) => {
-                tasksArray.push(doc.data().task as Task)
+                const record = doc.data() as Task;
+                record['id'] = doc.id;   //include the id for handling
+                tasksArray.push(record)
             });
             return tasksArray;
         }
@@ -122,10 +124,10 @@ export class FirebaseService {
     async createTask(task: Task): Promise<void> {
         const taskCollectionRef = collection(db, 'tasks');
         try {
-            addDoc(taskCollectionRef, {
-               task
-            }).then((res) => {
-                console.log('new task doc created!',res)
+            addDoc(taskCollectionRef,
+                task
+            ).then((res) => {
+                console.log('new task doc created!', res)
 
             })
         } catch (e) {
@@ -134,57 +136,41 @@ export class FirebaseService {
     }
     /**
      * Returns 1 task by ID
-     * @param email string
+     * @param taskId string
      * @returns 
      */
-    async getTaskByID(email: string): Promise<User | null> {
-        return null;
-        // const userCollectionRef = collection(db, 'users');
-
-        // const userQuery = query(userCollectionRef, where('email', '==', email))
-        // try {
-        //     // Execute the query
-        //     const querySnapshot = await getDocs(userQuery);
-
-        //     // Check if there are any matching documents
-        //     if (querySnapshot.size > 0) {
-        //         // Retrieve the first document (assuming email is unique)
-        //         const userData = querySnapshot.docs[0].data() as User;
-        //         console.log(userData);
-        //         return userData;
-        //     } else {
-        //         // No matching documents found
-        //         console.log(`No user found with email: ${email}`);
-        //         return null;
-        //     }
-        // } catch (error) {
-        //     console.error('Error fetching user by email:', error);
-        //     throw new Error('Error fetching user by email');
-        // }
+    async getTaskByID(taskId: string): Promise<Task | null> {
+        const taskDocRef = doc(db, 'tasks', taskId);
+        try {
+            const docSnapshot = await getDoc(taskDocRef);
+            if (docSnapshot.exists()) {
+                const taskData = docSnapshot.data() as Task;
+                taskData.id = docSnapshot.id; // Attach the id to the task data
+                return taskData;
+            } else {
+                console.log(`No task found with id: ${taskId}`);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching task by id:', error);
+            throw new Error('Error fetching task by id');
+        }
     }
 
     /**
      * Update A user record to manipulate profile.
-     * @param email  string
+     * @param id  string
      * @param dataToUpdate object partial of the User Model
      * @returns void
      */
-    async updateTaskByID(id: string, dataToUpdate: Partial<User>): Promise<void> {
-        // const userToUpdate = await this.getUserByEmail(email);
-        // if (!userToUpdate) {
-        //     console.error(`User with email ${email} not found.`);
-        //     return;
-        // }
-
-        // const userDocRef = doc(collection(db, 'users'), userToUpdate.uid);
-
-        // try {
-        //     // Update the user document with the provided data
-        //     await updateDoc(userDocRef, dataToUpdate);
-        //     console.log(`User with email ${email} updated successfully.`);
-        // } catch (error) {
-        //     console.error('Error updating user:', error);
-        //     throw new Error('Error updating user');
-        // }
+    async updateTaskByID(id: string, dataToUpdate: Partial<Task>): Promise<void> {
+        const taskDocRef = doc(db, 'tasks', id);
+        try {
+            await updateDoc(taskDocRef, dataToUpdate);
+            // console.log(`Task with id ${id} updated successfully.`);
+        } catch (error) {
+            console.error('Error updating task:', error);
+            throw new Error('Error updating task');
+        }
     }
 }
