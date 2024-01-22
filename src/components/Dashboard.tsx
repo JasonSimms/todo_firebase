@@ -70,8 +70,9 @@ interface Page {
    };
   
    // Function to close the navigation menu
-   const handleCloseNavMenu = () => {
+   const handleCloseNavMenu = (callback : Function) => {
     setAnchorElNav(null);
+    callback();
    };
   
    // Function to close the user menu
@@ -100,6 +101,7 @@ interface Page {
       return color;
    }
 
+   //Reduce a displayedname to 2 characters for Avatar
    function stringAvatar(name: string) {
       return {
          sx: {
@@ -163,8 +165,8 @@ interface Page {
                      }}
                   >
                      {pages.map((page) => (
-                        <MenuItem key={page.label} onClick={handleCloseNavMenu}>
-                           <Typography textAlign="center"></Typography>
+                        <MenuItem key={page.label} onClick={() => { if (page.action) handleCloseNavMenu(page.action) }}>
+                           <Typography textAlign="center">{page.label}</Typography>
                         </MenuItem>
                      ))}
                   </Menu>
@@ -191,7 +193,7 @@ interface Page {
                   {pages.map((page) => (
                      <Button
                         key={page.label}
-                        onClick={() => { handleCloseNavMenu(); if (page.action) page.action(); }}
+                        onClick={() => { if (page.action) handleCloseNavMenu(page.action) }}
                         sx={{ my: 2, color: 'white', display: 'block' }}
                      >
                         {page.label}

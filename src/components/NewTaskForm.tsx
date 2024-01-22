@@ -19,6 +19,7 @@ import Slider from '@mui/material/Slider';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
 
 //Interface imports
 import { Task } from '../models/Task';
@@ -26,7 +27,7 @@ import { Task } from '../models/Task';
 //Service imports
 import { FirebaseService } from '../services/FirestoreServices';
 import { useAuth } from '../contexts/AuthContext';
-import {completeTask} from '../services/TaskUtils';
+// import {completeTask} from '../services/TaskUtils';
 
 //Service setup
 const submitTask = async (task: Task) => {  //todo remove firebaseServices and migrate to utils.
@@ -95,8 +96,7 @@ const preProcessTaskForm = (title: string, description: string, assignedTo: stri
 
 export default function NewTaskForm() {
   const { currentUser } = useAuth();
-
-
+  const navigate = useNavigate();
 
   //Form state
   const [datePickerValue, setDatePickerValue] = React.useState<Dayjs>((dayjs().add(1, 'day')));
@@ -117,7 +117,8 @@ export default function NewTaskForm() {
     if (title !== null && description !== null && createdBy !== undefined) {
       const newForm = preProcessTaskForm(title, description, assignedToValue, taskType, frequencyValue, datePickerValue, createdBy);
       const result = await submitTask(newForm);
-      console.log('result!', result)
+      // console.log('result!', result)
+      navigate('/tasks')
     } else {
       console.error('Title, createdBy or Description is null');
     }
