@@ -79,7 +79,7 @@ const preProcessTaskForm = (title: string, description: string, assignedTo: stri
 
 
   const newTask: Task = {
-    title, description, assignedTo, taskType, createdBy,
+    title, description, assignedTo, taskType, createdBy, assignedDate:'insertdatehere',
     dateCreated: new Date().toISOString(),
   }
 
@@ -89,7 +89,7 @@ const preProcessTaskForm = (title: string, description: string, assignedTo: stri
 
   //stringify they date object from Dayjs.
   const date = assignedDate?.toISOString()
-  newTask['dateAssigned'] = date;
+  newTask['assignedDate'] = date;
 
   return newTask;
 }

@@ -40,11 +40,24 @@ const TaskTable: React.FC = () => {
   const [selectedRow, setSelectedRow] = useState<Task>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
+  /**
+   * Function demonstrated if a task is assigned or not.
+   * @param taskDate ISO 8601 format date from task collection dateAssigned
+   * @returns boolean use for color coding table etc.
+   */
+  const isTaskDue = (taskDate:string) : boolean =>{
+    const today = new Date();
+    const comparableDate = new Date(taskDate);
+    return comparableDate < today;
+  }
+
+
   //get data for the table
   const fetchTasks = useCallback(async () => {
     const firebaseService = new FirebaseService();
     const data = await firebaseService.getAllTasks(); //TODO add error handling
     if (data) {
+      console.log(data);
       setTasksData(data);
       setLoading(false);
     } else console.error('No data from fetchTasks!')
@@ -98,7 +111,7 @@ const TaskTable: React.FC = () => {
                     setSelectedRow(row)
                     setDialogOpen(true)
                   }}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: isTaskDue(row.assignedDate) ? 'pink' : '' }}
                 >
                   <TableCell component="th" scope="row">
                     {row.title}
