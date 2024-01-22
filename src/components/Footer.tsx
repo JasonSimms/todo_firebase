@@ -6,8 +6,6 @@ import Container from '@mui/material/Container';
 export default function Footer() {
   const defaultTheme = createTheme();
   return (
-
-
     <ThemeProvider theme={defaultTheme}>
       <Box
         sx={{

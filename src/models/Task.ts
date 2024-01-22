@@ -5,7 +5,7 @@ export interface Task {
     lastCompletedDate?: string;
     createdBy?: string;
     assignedTo?: string;
-    frequency?: string;
+    frequency: 'Once' | 'Weekly' | 'Monthly' | 'Quarterly' | '6mo' | 'Annually';
     description?: string;
     taskType?: string;
     assignedDate: string;

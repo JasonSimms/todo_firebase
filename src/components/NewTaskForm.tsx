@@ -79,13 +79,13 @@ const preProcessTaskForm = (title: string, description: string, assignedTo: stri
 
 
   const newTask: Task = {
-    title, description, assignedTo, taskType, createdBy, assignedDate:'insertdatehere',
+    title, description, assignedTo, taskType, createdBy, assignedDate:'placeholder', frequency:'Once',
     dateCreated: new Date().toISOString(),
   }
 
   //return the label from the slider instead of a numerical value.
   const mark = marks.find(mark => mark.value === frequency);
-  newTask['frequency'] = mark ? mark.label.toLowerCase() : '';
+  newTask['frequency'] = mark ? mark.label as "Once" | "Weekly" | "Monthly" | "Quarterly" | "6mo" | "Annually" : 'Once';
 
   //stringify they date object from Dayjs.
   const date = assignedDate?.toISOString()

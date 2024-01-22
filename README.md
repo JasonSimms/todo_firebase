@@ -22,7 +22,9 @@ You will also see any lint errors in the console.
 - [x] Connect Firestore with basic CRUD
 - [x] Define Task Model
 - [x] Define User Model
-- [ ] Draft UX : todo navigate away from new task creation to task table.  change table colors for tasks which are due. generated the completedTasks on task completion and add user.
+- [x] Draft UX 
+- [x] Change table colors for tasks which are due. 
+- [ ] Generate the completedTasks on task completion and add user.
 - [ ] Establish displayed name
 - [ ] Define CompletedTask Model
 - [ ] Refine CRUD methods

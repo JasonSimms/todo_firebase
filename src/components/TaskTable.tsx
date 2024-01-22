@@ -84,7 +84,7 @@ const TaskTable: React.FC = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => {
-              selectedRow?.id && completeTask(selectedRow.id)
+              selectedRow?.id && completeTask(selectedRow.id, selectedRow.frequency)
               setDialogOpen(false)
             }
             }>Yes</Button>
