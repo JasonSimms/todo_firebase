@@ -112,14 +112,14 @@ export default function SignInComponent() {
             <Button fullWidth
               variant="contained"
               sx={{ mt: 0, mb: 2 }}
-              onClick={() => handleLogin('demo@email.com', 'demoPassword')}
+              onClick={() => handleLogin('max@gmail.com', 'maxPass')}
               color={'warning'}>
               Sign in as Max Mustermann (DEMO)
             </Button>
             <Button fullWidth
               variant="contained"
               sx={{ mt: 0, mb: 2 }}
-              onClick={() => handleLogin('demo@email.com', 'demoPassword')}
+              onClick={() => handleLogin('erika@gmail.com', 'erikaPass')}
               color={'warning'}>
               Sign in as Erika Mustermann (DEMO)
             </Button>

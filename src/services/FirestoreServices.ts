@@ -71,6 +71,31 @@ export class FirebaseService {
         }
     }
 
+    async getUserById(uid: string): Promise<User | null> {
+        const userCollectionRef = collection(db, 'users');
+
+        const userQuery = query(userCollectionRef, where('uid', '==', uid))
+        try {
+            // Execute the query
+            const querySnapshot = await getDocs(userQuery);
+
+            // Check if there are any matching documents
+            if (querySnapshot.size > 0) {
+                // Retrieve the first document
+                const userData = querySnapshot.docs[0].data() as User;
+                console.log(userData);
+                return userData;
+            } else {
+                // No matching documents found
+                console.log(`No user found with uid: ${uid}`);
+                return null;
+            }
+        } catch (error) {
+            console.error('Error fetching user by id:', error);
+            throw new Error('Error fetching user by id');
+        }
+    }
+
     /**
      * Update A user record to manipulate profile.
      * @param email  string

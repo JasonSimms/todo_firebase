@@ -7,9 +7,14 @@ import { getAuth } from "firebase/auth";
 import * as admin from 'firebase-admin';
 
 
+interface AuthUser {
+  uid: string;
+  email: string;
+ }
+
 // Context for the Auth Provider
 interface AuthContextProps {
-  currentUser: User | null;
+  currentUser: AuthUser | null;
   login: (email: string, password: string) => Promise<any>;
   signup: (email: string, password: string, displayName: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -36,7 +41,7 @@ export function useAuth(): AuthContextProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<{uid: string, email: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   /**
@@ -110,7 +115,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     // Subscribe to changes in authentication state
     const unsubscribe = auth.onAuthStateChanged((user) => {
       // Update the current user state when the authentication state changes
-      setCurrentUser(user ? { uid: user.uid, email: user.email || '', displayName: user.displayName || 'HomerSimpson' } : null);
+      setCurrentUser(user ? { uid: user.uid, email: user.email || '' } : null);
       // Set loading to false once authentication state is determined
       setLoading(false);
     });
