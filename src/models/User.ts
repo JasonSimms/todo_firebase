@@ -3,6 +3,6 @@ export interface User {
         uid: string;
         email: string;
         household?: string;
-        displayName?: string;
+        displayName: string;
         completedTasks?: { title: string; date: string }[];
       }

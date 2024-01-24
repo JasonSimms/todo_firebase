@@ -12,19 +12,37 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const { signup } = useAuth();
+  const navigate = useNavigate();
+
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const displayName = data.get('displayName')?.toString();
+    const email = data.get('email')?.toString();
+    const password = data.get('password')?.toString();
+    if (displayName && email && password) {
+      try {
+        await signup(email, password, displayName);
+        navigate('/tasks');
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    else {
+      console.error('All fields are required!');
+    }
+
   };
 
   return (
@@ -43,55 +61,44 @@ export default function SignUp() {
             <PersonAddAltOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            Create New User
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit}  sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
-      }}>
-              <Grid item xs={12} >
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{
+            '& .MuiTextField-root': { m: 1, width: '25ch' },
+          }}>
+            <Grid item xs={12} >
+              <TextField
+                required
+                fullWidth
+                name="displayName"
+                label="User Name"
+                id="displayName"
+                autoComplete="given-name"
+                autoFocus
+              />
+              <Grid item />
+              <Grid item xs={12}>
                 <TextField
-                  autoComplete="given-name"
-                  name="displayName"
                   required
                   fullWidth
-                  id="displayName"
-                  label="User Name"
-                  autoFocus
+                  name="email"
+                  label="Email Address"
+                  id="email"
+                  autoComplete="email"
                 />
-                <Grid item />
-                {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid> */}
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="new-password"
-                  />
-                </Grid>
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
+            </Grid>
             <Button
               type="submit"
               fullWidth

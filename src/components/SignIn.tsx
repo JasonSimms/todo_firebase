@@ -22,7 +22,7 @@ import { Google } from '@mui/icons-material';
 
 const defaultTheme = createTheme();
 
-export default function Signup() {
+export default function SignInComponent() {
   // Get the navigate function from react-router-dom
   const navigate = useNavigate();
   const { login } = useAuth();

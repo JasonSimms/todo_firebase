@@ -24,7 +24,8 @@ You will also see any lint errors in the console.
 - [x] Define User Model
 - [x] Draft UX 
 - [x] Change table colors for tasks which are due. 
-- [ ] Implement Sign UP
+- [x] Implement Manual Sign UP
+- [ ] Fix Profile View and updating.
 - [ ] Generate the completedTasks on task completion and add user.
 - [ ] Establish displayed name
 - [ ] Define CompletedTask Model

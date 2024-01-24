@@ -11,7 +11,7 @@ import * as admin from 'firebase-admin';
 interface AuthContextProps {
   currentUser: User | null;
   login: (email: string, password: string) => Promise<any>;
-  signup: (email: string, password: string) => Promise<void>;
+  signup: (email: string, password: string, displayName: string) => Promise<void>;
   logout: () => Promise<void>;
   // resetPassword: (email: string) => Promise<void>;
   // updateEmail: (email: string) => Promise<void>;
@@ -45,13 +45,13 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
    * @param email - user provided email string
    * @param password - user provided password string
    */
-  async function signup(email: string, password: string): Promise<void> {
+  async function signup(email: string, password: string, displayName: string): Promise<void> {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);  //Firebase Auth
       const user = userCredential.user;
 
       const firebaseService = new FirebaseService(); //Firestore User doc creation
-      await firebaseService.createUser(email, user.uid);
+      await firebaseService.createUser(email, user.uid, displayName);
     } catch (error: unknown) {
       if (error instanceof Error) {
         // Use the specific Error type
@@ -110,7 +110,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     // Subscribe to changes in authentication state
     const unsubscribe = auth.onAuthStateChanged((user) => {
       // Update the current user state when the authentication state changes
-      setCurrentUser(user ? { uid: user.uid, email: user.email || '' } : null);
+      setCurrentUser(user ? { uid: user.uid, email: user.email || '', displayName: user.displayName || 'HomerSimpson' } : null);
       // Set loading to false once authentication state is determined
       setLoading(false);
     });
