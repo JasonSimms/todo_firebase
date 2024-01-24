@@ -28,7 +28,7 @@ export class FirebaseService {
      * @param email string
      * @param uid generated from the Firebase Auth Context.
      */
-    async createUser(email: string, uid: string, displayName: string): Promise<void> {
+    async createUser(email: string, uid: string, displayName: string, photoUrl?: string): Promise<void> {
         const userCollectionRef = collection(db, 'users');
         if(!displayName)displayName=email;
         try {

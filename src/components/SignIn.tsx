@@ -1,7 +1,5 @@
-import React, { useState } from 'react'
-import { handlePasswordReset, useAuth } from '../contexts/AuthContext';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '../firebase/firebaseconfig';
+import React from 'react'
+import { useAuth } from '../contexts/AuthContext';
 
 
 import Avatar from '@mui/material/Avatar';
@@ -25,12 +23,14 @@ const defaultTheme = createTheme();
 export default function SignInComponent() {
   // Get the navigate function from react-router-dom
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, proceedWithGooglePopup } = useAuth();
 
   const handleGoogle = async (e: React.MouseEvent) => {
-    const provider = await new GoogleAuthProvider();
-    return signInWithPopup(auth, provider);
-  }
+    e.preventDefault();
+      await proceedWithGooglePopup();
+      navigate('/tasks');
+    }
+  
 
   const handleLogin = async (email: string, password: string) => {
     try {

@@ -196,6 +196,7 @@ interface Page {
                         key={page.label}
                         onClick={() => { if (page.action) handleCloseNavMenu(page.action) }}
                         sx={{ my: 2, color: 'white', display: 'block' }}
+                        disabled={!currentUser}
                      >
                         {page.label}
                      </Button>
@@ -205,8 +206,7 @@ interface Page {
                <Box sx={{ flexGrow: 0 }}>
                   <Tooltip title="Open settings">
                      <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                        {currentUser ? <Avatar {...stringAvatar(currentUser.email)} /> : <></>}
-                     </IconButton>
+                     {currentUser ? (currentUser.photoUrl ? <Avatar alt="Remy Sharp" src={currentUser.photoUrl} /> : <Avatar {...stringAvatar(currentUser.email)} />) : <></>} </IconButton>
                   </Tooltip>
                   <Menu
                      sx={{ mt: '45px' }}

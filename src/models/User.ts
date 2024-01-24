@@ -5,4 +5,5 @@ export interface User {
         household?: string;
         displayName: string;
         completedTasks?: { title: string; date: string }[];
+        photoUrl?: string;
       }

@@ -1,15 +1,19 @@
 import { useContext, useState, useEffect, createContext, ReactNode } from 'react';
 import { auth } from '../firebase/firebaseconfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword} from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseService } from '../services/FirestoreServices';
-import { User } from '../models/User';
-import { getAuth } from "firebase/auth";
+// import { User } from '../models/User';
+// import { getAuth } from "firebase/auth";
 import * as admin from 'firebase-admin';
+import { GoogleAuthProvider, signInWithPopup, getAdditionalUserInfo } from 'firebase/auth';
+
 
 
 interface AuthUser {
   uid: string;
   email: string;
+  displayName: string;
+  photoUrl: string;
  }
 
 // Context for the Auth Provider
@@ -18,6 +22,7 @@ interface AuthContextProps {
   login: (email: string, password: string) => Promise<any>;
   signup: (email: string, password: string, displayName: string) => Promise<void>;
   logout: () => Promise<void>;
+  proceedWithGooglePopup: () => Promise<void>;
   // resetPassword: (email: string) => Promise<void>;
   // updateEmail: (email: string) => Promise<void>;
   // updatePassword: (password: string) => Promise<void>;
@@ -41,8 +46,30 @@ export function useAuth(): AuthContextProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
-  const [currentUser, setCurrentUser] = useState<{uid: string, email: string } | null>(null);
+  
+const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+
   const [loading, setLoading] = useState(true);
+
+  async function proceedWithGooglePopup() {
+    const provider = await new GoogleAuthProvider();
+    const result = await signInWithPopup(auth, provider);
+    // console.log('result', result);
+    if (result) {
+      const moreInfo = getAdditionalUserInfo(result);
+      const newUser = moreInfo?.isNewUser;
+      if (!newUser) return;
+      let email = result.user.email;
+      let uid = result.user.uid;
+      let displayName = result.user.displayName;
+      let photoURL = result.user.photoURL;
+      if (email && uid && displayName && photoURL) {
+        const firebaseService = new FirebaseService(); //Firestore User doc creation
+        await firebaseService.createUser(email, uid, displayName, photoURL);
+        console.log('new user created from google!')
+     }
+    }
+  }
 
   /**
    * Signup Flow for new user from Firebase
@@ -115,7 +142,8 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     // Subscribe to changes in authentication state
     const unsubscribe = auth.onAuthStateChanged((user) => {
       // Update the current user state when the authentication state changes
-      setCurrentUser(user ? { uid: user.uid, email: user.email || '' } : null);
+      // console.log('auth state changed what is available? ', user);
+      setCurrentUser(user ? { uid: user.uid, email: user.email || '', displayName: user.displayName || '', photoUrl: user.photoURL || '' } : null);
       // Set loading to false once authentication state is determined
       setLoading(false);
     });
@@ -130,6 +158,7 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
     login,       // Function to handle user login (not shown in the provided code)
     signup,      // Function to handle user signup (not shown in the provided code)
     logout,      // Function to handle user logout (not shown in the provided code)
+    proceedWithGooglePopup,
     // Additional functions (e.g., resetPassword, updateEmail, updatePassword) may be added as needed
   };
 
@@ -143,35 +172,35 @@ export function AuthProvider({ children }: AuthProviderProps): JSX.Element {
 }
 
 export function handlePasswordReset() {
-const actionCodeSettings = {
-  // URL you want to redirect back to. The domain (www.example.com) for
-  // this URL must be whitelisted in the Firebase Console.
-  url: 'https://www.example.com/checkout?cartId=1234',
-  // This must be true for email link sign-in.
-  handleCodeInApp: true,
-  iOS: {
-    bundleId: 'com.example.ios',
-  },
-  android: {
-    packageName: 'com.example.android',
-    installApp: true,
-    minimumVersion: '12',
-  },
-  // FDL custom domain.
-  dynamicLinkDomain: 'coolapp.page.link',
-};
+  const actionCodeSettings = {
+    // URL you want to redirect back to. The domain (www.example.com) for
+    // this URL must be whitelisted in the Firebase Console.
+    url: 'https://www.example.com/checkout?cartId=1234',
+    // This must be true for email link sign-in.
+    handleCodeInApp: true,
+    iOS: {
+      bundleId: 'com.example.ios',
+    },
+    android: {
+      packageName: 'com.example.android',
+      installApp: true,
+      minimumVersion: '12',
+    },
+    // FDL custom domain.
+    dynamicLinkDomain: 'coolapp.page.link',
+  };
 
-// Admin SDK API to generate the password reset link.
-// const userEmail = email;
-console.log('Not Yet Implemented')
-// admin.auth().generatePasswordResetLink('simmsthecoder@gmail.com', actionCodeSettings)
-//   .then((link:string) => {
-//     // Construct password reset email template, embed the link and send
-//     // using custom SMTP server.
-//     console.log('results,',link);
-//     // return sendCustomPasswordResetEmail(userEmail, displayName, link);
-//   })
-//   .catch((error:any) => {
-//     console.error(error)// Some error occurred.
-//   });
+  // Admin SDK API to generate the password reset link.
+  // const userEmail = email;
+  console.log('Not Yet Implemented')
+  // admin.auth().generatePasswordResetLink('simmsthecoder@gmail.com', actionCodeSettings)
+  //   .then((link:string) => {
+  //     // Construct password reset email template, embed the link and send
+  //     // using custom SMTP server.
+  //     console.log('results,',link);
+  //     // return sendCustomPasswordResetEmail(userEmail, displayName, link);
+  //   })
+  //   .catch((error:any) => {
+  //     console.error(error)// Some error occurred.
+  //   });
 }
