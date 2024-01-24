@@ -37,13 +37,13 @@ export async function completeTask(taskId : string, frequency:string) {
         throw new Error("Task ID is undefined");
     }
 
-    console.log('frequency check:', frequency);
     const today = new Date().toISOString();
 
+    //Return a date in the future based on desired frequency of task.
     function newDueDate() {
         let date = new Date();
         switch(frequency) {
-            case 'Once':
+            case 'Once':  //TODO
                 break;
             case 'Weekly':
                 date.setDate(date.getDate() + 7);

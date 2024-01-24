@@ -6,9 +6,9 @@
  * 
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FirebaseService } from '../services/FirestoreServices';
-import {completeTask} from '../services/TaskUtils';
+import { completeTask } from '../services/TaskUtils';
 
 
 //Table imports
@@ -36,7 +36,7 @@ import { Task } from '../models/Task';
 const TaskTable: React.FC = () => {
   //state management
   const [tasksData, setTasksData] = useState<Task[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // const [loading, setLoading] = useState<boolean>(true);
   const [selectedRow, setSelectedRow] = useState<Task>();
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
@@ -45,27 +45,39 @@ const TaskTable: React.FC = () => {
    * @param taskDate ISO 8601 format date from task collection dateAssigned
    * @returns boolean use for color coding table etc.
    */
-  const isTaskDue = (taskDate:string) : boolean =>{
+  const isTaskDue = (taskDate: string): boolean => {
     const today = new Date();
     const comparableDate = new Date(taskDate);
     return comparableDate < today;
   }
 
+  /**
+   * Returns a readable date for the table
+   * @param dateString IsoDatestring ie - 2024-01-24T09:21:18.015Z
+   * @returns string a readable date.
+   */
+  function formatDate(dateString : string) {
+    if(!dateString || dateString.length == 0) return '';
+    const formattedDate = dateString.substring(8,10)+dateString.substring(4,8)+dateString.substring(0,4);
+    return formattedDate;
+}
 
   //get data for the table
-  const fetchTasks = useCallback(async () => {
+  useEffect(() => {
     const firebaseService = new FirebaseService();
-    const data = await firebaseService.getAllTasks(); //TODO add error handling
-    if (data) {
-      console.log(data);
-      setTasksData(data);
-      setLoading(false);
-    } else console.error('No data from fetchTasks!')
+    const fetchTasks = async () => {
+      const data = await firebaseService.getInitialTasks(); // Get initial tasks
+      if (data) {
+        setTasksData(data);
+        // setLoading(false);
+      } else console.error('No data from fetchTasks!')
+    };
+    fetchTasks();
+
+    const unsubscribe = firebaseService.getRealTimeTasks(setTasksData); // Set up real-time listener
+    return () => unsubscribe(); // Clean up on unmount
   }, []);
 
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
 
   return (
     <>
@@ -101,6 +113,7 @@ const TaskTable: React.FC = () => {
                 <TableCell align="right">Type</TableCell>
                 <TableCell align="right">Assigned&nbsp;To</TableCell>
                 <TableCell align="right">Created&nbsp;by</TableCell>
+                <TableCell align="right">Assigned&nbsp;Date</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -111,7 +124,7 @@ const TaskTable: React.FC = () => {
                     setSelectedRow(row)
                     setDialogOpen(true)
                   }}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: isTaskDue(row.assignedDate) ? 'pink' : '' }}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: isTaskDue(row.assignedDate) ? 'pink' : 'white' }}
                 >
                   <TableCell component="th" scope="row">
                     {row.title}
@@ -121,6 +134,7 @@ const TaskTable: React.FC = () => {
                   <TableCell align="right">{row.taskType}</TableCell>
                   <TableCell align="right">{row.assignedTo}</TableCell>
                   <TableCell align="right">{row.createdBy}</TableCell>
+                  <TableCell align="right">{formatDate(row.assignedDate)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

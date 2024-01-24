@@ -1,8 +1,9 @@
 
-import { getFirestore, collection, getDocs, getDoc, addDoc, doc, query, where, updateDoc, QueryDocumentSnapshot } from "firebase/firestore";
+import { getFirestore, collection, getDocs, getDoc, addDoc, doc, query, where, updateDoc, QueryDocumentSnapshot, onSnapshot } from "firebase/firestore";
 import app from '../firebase/firebaseconfig';
 import { User } from '../models/User';
 import { Task } from '../models/Task';
+import { Unsubscribe } from "firebase/auth";
 
 // Initialize Firestore
 const db = getFirestore(app);
@@ -98,22 +99,39 @@ export class FirebaseService {
      * TASK SERVICES 
      */
 
-    async getAllTasks(): Promise<Task[]> {
-        const querySnapshot = await getDocs(collection(db, 'tasks'));
+    async getInitialTasks(): Promise<Task[]> {
+        const querySnapshot = collection(db, 'tasks');
+        const tasksArray: Task[] = [];
+        const snapshot = await getDocs(querySnapshot);
+        snapshot.forEach((doc: QueryDocumentSnapshot) => {
+            const record = doc.data() as Task;
+            record['id'] = doc.id;   //include the id for handling
+            tasksArray.push(record)
+        });
+        return tasksArray;
+    }
 
-        try {
+    /**
+  * Sets up a real-time listener on the Firestore 'tasks' collection.
+  * Every time the collection changes, it retrieves the updated tasks,
+  * updates the state with the new tasks, and logs the IDs of the updated tasks.
+  *
+  * @param setTasksData - A function to update the state with the new tasks.
+  * @returns An Unsubscribe function that can be called to stop listening for changes.
+  */
+    getRealTimeTasks(setTasksData: React.Dispatch<React.SetStateAction<Task[]>>): Unsubscribe {
+        const collectionRef = collection(db, 'tasks');
+        return onSnapshot(collectionRef, (snapshot) => {
+            console.log('getRealTimeTasksFired...')
             const tasksArray: Task[] = [];
-            querySnapshot.forEach((doc: QueryDocumentSnapshot) => {
+            snapshot.forEach((doc: QueryDocumentSnapshot) => {
                 const record = doc.data() as Task;
                 record['id'] = doc.id;   //include the id for handling
+                console.log('doc with id ...', record['id']);
                 tasksArray.push(record)
             });
-            return tasksArray;
-        }
-        catch (error) {
-            console.error('Error fetching tasks:', error);
-            throw new Error('Error fetching tasks');
-        }
+            setTasksData(tasksArray);
+        });
     }
     /**
      * Creates a record of Task
