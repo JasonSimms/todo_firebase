@@ -25,18 +25,12 @@ const defaultTheme = createTheme();
 export default function Signup() {
   // Get the navigate function from react-router-dom
   const navigate = useNavigate();
-  const { signup, login } = useAuth();
-  const [action, setAction] = useState<'signup' | 'login' | null>(null);
+  const { login } = useAuth();
 
   const handleGoogle = async (e: React.MouseEvent) => {
     const provider = await new GoogleAuthProvider();
     return signInWithPopup(auth, provider);
   }
-
-  const handleSignup = async () => {
-
-    navigate('/signup')
-  };
 
   const handleLogin = async (email: string, password: string) => {
     try {
@@ -54,11 +48,8 @@ export default function Signup() {
     const email = data.get('email') as string;
     const password = data.get('password') as string;
 
-    if (action === 'signup') {
-      handleSignup();  //deprecated by new signup component.
-    } else if (action === 'login') {
-      handleLogin(email, password);
-    }
+    handleLogin(email, password);  //TODO Alert on error
+
   };
 
 
@@ -101,23 +92,12 @@ export default function Signup() {
               id="password"
               autoComplete="current-password"
             />
-
-            {/* <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt:0, mb: 1 }}
-              onClick={() =>setAction('signup')}
-              >
-              Sign Up
-            </Button> */}
             <Button
               type="submit"
               fullWidth
               variant="outlined"
               sx={{ mt: 0, mb: 1 }}
               name="login"
-              onClick={() => setAction('login')}
             >
               login
             </Button>
@@ -127,21 +107,28 @@ export default function Signup() {
               onClick={handleGoogle}
               startIcon={<Google />}
               color={'secondary'}>
-              Sign in with Google
+              Proceed in with Google
             </Button>
             <Button fullWidth
               variant="contained"
               sx={{ mt: 0, mb: 2 }}
               onClick={() => handleLogin('demo@email.com', 'demoPassword')}
               color={'warning'}>
-              Sign in with Demo Account
+              Sign in as Max Mustermann (DEMO)
+            </Button>
+            <Button fullWidth
+              variant="contained"
+              sx={{ mt: 0, mb: 2 }}
+              onClick={() => handleLogin('demo@email.com', 'demoPassword')}
+              color={'warning'}>
+              Sign in as Erika Mustermann (DEMO)
             </Button>
             <Grid container>
-              <Grid item xs>
+              {/* <Grid item xs>
                 <Link href="#" variant="body2" onClick={handlePasswordReset}>
                   Forgot password?
                 </Link>
-              </Grid>
+              </Grid> */}
               <Grid item>
                 <Link href="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
@@ -150,7 +137,6 @@ export default function Signup() {
             </Grid>
           </Box>
         </Box>
-        {/* <Copyright sx={{ mt: 8, mb: 4 }} /> */}
       </Container>
     </ThemeProvider>)
 }

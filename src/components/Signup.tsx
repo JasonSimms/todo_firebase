@@ -3,15 +3,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import PersonAddAltOutlinedIcon from '@mui/icons-material/PersonAddAltOutlined';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -29,7 +29,7 @@ export default function SignUp() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="lg" sx={{ minWidth: '50vw' }}>
         <CssBaseline />
         <Box
           sx={{
@@ -40,13 +40,15 @@ export default function SignUp() {
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
+            <PersonAddAltOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid item xs={12}>
+          <Box component="form" noValidate onSubmit={handleSubmit}  sx={{
+        '& .MuiTextField-root': { m: 1, width: '25ch' },
+      }}>
+              <Grid item xs={12} >
                 <TextField
                   autoComplete="given-name"
                   name="displayName"
@@ -56,8 +58,8 @@ export default function SignUp() {
                   label="User Name"
                   autoFocus
                 />
-              <Grid item />
-              {/* <Grid item xs={12} sm={6}>
+                <Grid item />
+                {/* <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   fullWidth
@@ -67,35 +69,29 @@ export default function SignUp() {
                   autoComplete="family-name"
                 />
               </Grid> */}
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
-                />
-              </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    id="email"
+                    label="Email Address"
+                    name="email"
+                    autoComplete="email"
+                  />
+                </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                />
+                <Grid item xs={12}>
+                  <TextField
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="password"
+                    autoComplete="new-password"
+                  />
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
-            </Grid>
             <Button
               type="submit"
               fullWidth

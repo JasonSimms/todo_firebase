@@ -20,6 +20,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import AddTaskIcon from '@mui/icons-material/AddTask';
 
 
 // Define the structure for a page
@@ -116,12 +117,12 @@ interface Page {
       <AppBar position="static">
          <Container maxWidth="xl">
             <Toolbar disableGutters>
-               <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+               <AddTaskIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
                <Typography
                   variant="h6"
                   noWrap
                   component="a"
-                  href="#app-bar-with-responsive-menu"
+                  // href="#app-bar-with-responsive-menu"
                   sx={{
                      mr: 2,
                      display: { xs: 'none', md: 'flex' },
