@@ -31,7 +31,7 @@ export class FirebaseService {
      */
     async createUser(email: string, uid: string, displayName: string, photoUrl?: string): Promise<void> {
         const userCollectionRef = collection(db, 'users');
-        if(!displayName)displayName=email;
+        if (!displayName) displayName = email;
         try {
             addDoc(userCollectionRef, {
                 email, uid, displayName
@@ -157,7 +157,16 @@ export class FirebaseService {
                 // console.log('doc with id ...', record['id']);
                 tasksArray.push(record)
             });
-            setTasksData(tasksArray);
+            const sortedTasks = tasksArray.sort((a, b) => {
+                if (a.assignedDate === 'completed') return 1;
+                if (b.assignedDate === 'completed') return -1;
+
+                const dateA = new Date(a.assignedDate);
+                const dateB = new Date(b.assignedDate);
+                return dateA.getTime() - dateB.getTime();
+            });
+            console.log('sorted....', sortedTasks[0].assignedDate);
+            setTasksData(sortedTasks);
         });
     }
     /**
@@ -221,13 +230,13 @@ export class FirebaseService {
 
 
     //-----------------
-       /**
-     * Creates a record of Task
-     * 
-     * @param task task object from front end conforming to the interface
-     * 
-     */
-       async createCompleteTask(task: CompletedTask): Promise<void> {
+    /**
+  * Creates a record of Task
+  * 
+  * @param task task object from front end conforming to the interface
+  * 
+  */
+    async createCompleteTask(task: CompletedTask): Promise<void> {
         const taskCollectionRef = collection(db, 'completedTasks');
         try {
             addDoc(taskCollectionRef,

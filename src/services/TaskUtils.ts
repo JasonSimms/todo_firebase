@@ -68,7 +68,7 @@ export async function completeTask(taskId: string, frequency: string, user?: str
         let date = new Date();
         switch (frequency) {
             case 'Once':
-                return null;
+                return 'completed'
             case 'Weekly':
                 date.setDate(date.getDate() + 7);
                 break;

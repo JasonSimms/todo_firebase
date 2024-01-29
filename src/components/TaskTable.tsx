@@ -36,7 +36,7 @@ import { Task } from '../models/Task';
 
 const TaskTable: React.FC = () => {
   // Get the current user's information
- const { currentUser } = useAuth();
+  const { currentUser } = useAuth();
   //state management
   const [tasksData, setTasksData] = useState<Task[]>([]);
   // const [loading, setLoading] = useState<boolean>(true);
@@ -46,12 +46,14 @@ const TaskTable: React.FC = () => {
   /**
    * Function demonstrated if a task is assigned or not.
    * @param taskDate ISO 8601 format date from task collection dateAssigned
-   * @returns boolean use for color coding table etc.
+   * @returns string use for color coding table etc.
    */
-  const isTaskDue = (taskDate: string): boolean => {
+  const isTaskDue = (taskDate: string): string => {
+    if (taskDate == 'completed') return 'lightGray'; //Tasks which were done once or no longer need to be completed.
     const today = new Date();
     const comparableDate = new Date(taskDate);
-    return comparableDate < today;
+    if (comparableDate < today) return "pink" //Tasks over due.
+    else return "white"  //Tasks not yet due.
   }
 
   /**
@@ -59,20 +61,30 @@ const TaskTable: React.FC = () => {
    * @param dateString IsoDatestring ie - 2024-01-24T09:21:18.015Z
    * @returns string a readable date.
    */
-  function formatDate(dateString : string) {
-    if(!dateString || dateString.length == 0) return '';
-    const formattedDate = dateString.substring(8,10)+dateString.substring(4,8)+dateString.substring(0,4);
+  function formatDate(dateString: string) {
+    if (dateString === 'completed') return dateString;
+    if (!dateString || dateString.length == 0) return '';
+    const formattedDate = dateString.substring(8, 10) + dateString.substring(4, 8) + dateString.substring(0, 4);
     return formattedDate;
-}
+  }
 
   //get data for the table
   useEffect(() => {
     const firebaseService = new FirebaseService();
     const fetchTasks = async () => {
-      const data = await firebaseService.getInitialTasks(); // Get initial tasks
-      if (data) {
-        setTasksData(data);
-        // setLoading(false);
+      const tasksData = await firebaseService.getInitialTasks(); // Get initial tasks
+      if (tasksData) {
+        console.log(tasksData[0].assignedDate)
+        const sortedTasks = tasksData.sort((a, b) => {
+          if (a.assignedDate === 'completed') return 1;
+          if (b.assignedDate === 'completed') return -1;
+  
+          const dateA = new Date(a.assignedDate);
+          const dateB = new Date(b.assignedDate);
+          return dateA.getTime() - dateB.getTime();
+      });
+      console.log('sorted....',sortedTasks[0].assignedDate);
+      setTasksData(sortedTasks);
       } else console.error('No data from fetchTasks!')
     };
     fetchTasks();
@@ -80,6 +92,7 @@ const TaskTable: React.FC = () => {
     const unsubscribe = firebaseService.getRealTimeTasks(setTasksData); // Set up real-time listener
     return () => unsubscribe(); // Clean up on unmount
   }, []);
+
 
 
   return (
@@ -123,11 +136,12 @@ const TaskTable: React.FC = () => {
               {tasksData.map((row) => (
                 <TableRow
                   key={row.title}
-                  onClick={(e) => {
+                  onClick={(e: any) => {
+                    e.preventDefault();
                     setSelectedRow(row)
                     setDialogOpen(true)
                   }}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: isTaskDue(row.assignedDate) ? 'pink' : 'white' }}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 }, backgroundColor: isTaskDue(row.assignedDate) }}
                 >
                   <TableCell component="th" scope="row">
                     {row.title}
