@@ -9,6 +9,7 @@
 import React, { useState, useEffect } from 'react';
 import { FirebaseService } from '../services/FirestoreServices';
 import { completeTask } from '../services/TaskUtils';
+import { useAuth } from '../contexts/AuthContext';
 
 
 //Table imports
@@ -34,6 +35,8 @@ import { Task } from '../models/Task';
 
 
 const TaskTable: React.FC = () => {
+  // Get the current user's information
+ const { currentUser } = useAuth();
   //state management
   const [tasksData, setTasksData] = useState<Task[]>([]);
   // const [loading, setLoading] = useState<boolean>(true);
@@ -96,7 +99,7 @@ const TaskTable: React.FC = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => {
-              selectedRow?.id && completeTask(selectedRow.id, selectedRow.frequency)
+              selectedRow?.id && completeTask(selectedRow.id, selectedRow.frequency, currentUser?.uid);
               setDialogOpen(false)
             }
             }>Yes</Button>

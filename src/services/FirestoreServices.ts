@@ -4,6 +4,7 @@ import app from '../firebase/firebaseconfig';
 import { User } from '../models/User';
 import { Task } from '../models/Task';
 import { Unsubscribe } from "firebase/auth";
+import { CompletedTask } from "../models/CompletedTask";
 
 // Initialize Firestore
 const db = getFirestore(app);
@@ -153,7 +154,7 @@ export class FirebaseService {
             snapshot.forEach((doc: QueryDocumentSnapshot) => {
                 const record = doc.data() as Task;
                 record['id'] = doc.id;   //include the id for handling
-                console.log('doc with id ...', record['id']);
+                // console.log('doc with id ...', record['id']);
                 tasksArray.push(record)
             });
             setTasksData(tasksArray);
@@ -215,6 +216,27 @@ export class FirebaseService {
         } catch (error) {
             console.error('Error updating task:', error);
             throw new Error('Error updating task');
+        }
+    }
+
+
+    //-----------------
+       /**
+     * Creates a record of Task
+     * 
+     * @param task task object from front end conforming to the interface
+     * 
+     */
+       async createCompleteTask(task: CompletedTask): Promise<void> {
+        const taskCollectionRef = collection(db, 'completedTasks');
+        try {
+            addDoc(taskCollectionRef,
+                task
+            ).then((res) => {
+                console.log('new task doc created!', res)
+            })
+        } catch (e) {
+            console.error(e);
         }
     }
 }

@@ -7,6 +7,7 @@
 import { FirebaseService } from './FirestoreServices';
 // Interfaces
 import { Task } from '../models/Task';
+import { CompletedTask } from '../models/CompletedTask';
 
 
 /*
@@ -26,13 +27,36 @@ title: "Clean the bathroom"
     lastCompletedDate?: boolean;
 
     */
+/**
+ * Creates a completed Task record in a separate Collection.
+ * @param taskId string
+ * @param user string userId
+ */
+async function createCompletedTask(taskId: string, userID?: string) {
+    if (!userID) throw ('No user ID provided!');
+
+    const firebaseService = new FirebaseService();
 
 
+    // Get the updated document from the original collection
+    const doc = await firebaseService.getTaskByID(taskId);
+
+    if (doc) {
+        // console.log('lets complete a completed Task Record', userID);
+        // Copy the updated document to the new collection
+        let completedTask: CompletedTask = doc as CompletedTask;
+        completedTask.completedBy = userID;
+        await firebaseService.createCompleteTask(completedTask);
+    } else {
+        console.log('No such document!');
+    }
+
+}
 /**
  *  Mark a task as completed.  
  * @param taskId string 
  */
-export async function completeTask(taskId : string, frequency:string) {
+export async function completeTask(taskId: string, frequency: string, user?: string) {
     if (!taskId) {
         throw new Error("Task ID is undefined");
     }
@@ -42,9 +66,9 @@ export async function completeTask(taskId : string, frequency:string) {
     //Return a date in the future based on desired frequency of task.
     function newDueDate() {
         let date = new Date();
-        switch(frequency) {
-            case 'Once':  //TODO
-                break;
+        switch (frequency) {
+            case 'Once':
+                return null;
             case 'Weekly':
                 date.setDate(date.getDate() + 7);
                 break;
@@ -69,9 +93,13 @@ export async function completeTask(taskId : string, frequency:string) {
     const newAssignedDate = newDueDate();
 
     const firebaseService = new FirebaseService();
-    try {
-        await firebaseService.updateTaskByID(taskId, { lastCompletedDate: today, assignedDate: newAssignedDate }); //TODO add error handling
-    } catch (error) {
-        console.error('unable to updateTaskByID', error);
+    if (newAssignedDate !== null) {
+        await firebaseService.updateTaskByID(taskId, { lastCompletedDate: today, assignedDate: newAssignedDate });
+    } else {
+        await firebaseService.updateTaskByID(taskId, { lastCompletedDate: today });
     }
+
+    // Create a completedTask Record in a separate collection.
+    await createCompletedTask(taskId, user);
+
 }
