@@ -1,5 +1,5 @@
 
-import { getFirestore, collection, getDocs, getDoc, addDoc, doc, query, where, updateDoc, QueryDocumentSnapshot, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, getDocs, getDoc, addDoc, doc, query, where, updateDoc, QueryDocumentSnapshot, onSnapshot, deleteDoc } from "firebase/firestore";
 import app from '../firebase/firebaseconfig';
 import { User } from '../models/User';
 import { Task } from '../models/Task';
@@ -248,4 +248,36 @@ export class FirebaseService {
             console.error(e);
         }
     }
+
+    /**
+     * 
+     * @returns an array of completed Tasks
+     */
+    async getAllCompletedTasks(): Promise<CompletedTask[]> {
+        const completedTasksCollectionRef = collection(db, 'completedTasks');
+        const completedTasksArray: CompletedTask[] = [];
+        const snapshot = await getDocs(completedTasksCollectionRef);
+        snapshot.forEach((doc: QueryDocumentSnapshot) => {
+            const record = doc.data() as CompletedTask;
+            record['id'] = doc.id;   //include the id for handling
+            completedTasksArray.push(record)
+        });
+        return completedTasksArray;
+    }
+
+    /**
+     * 
+     * @param taskId string
+     */
+    async deleteCompletedTask(taskId: string): Promise<void> {
+        const taskDocRef = doc(db, 'completedTasks', taskId);
+        try {
+            await deleteDoc(taskDocRef);
+            console.log(`Task with id ${taskId} deleted successfully.`);
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            throw new Error('Error deleting task');
+        }
+    }
+
 }

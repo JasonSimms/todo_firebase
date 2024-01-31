@@ -79,7 +79,7 @@ const preProcessTaskForm = (title: string, description: string, assignedTo: stri
 
 
   const newTask: Task = {
-    title, description, assignedTo, taskType, createdBy, assignedDate:'placeholder', frequency:'Once',
+    title, description, assignedTo, taskType, createdBy, assignedDate:'placeholder', frequency:'Once', lastCompletedDate: null,
     dateCreated: new Date().toISOString(),
   }
 

@@ -9,6 +9,7 @@ import SignUp from './components/SignUp';
 import TaskTable from './components/TaskTable';
 import UserCard from './components/UserCard';
 import Footer from './components/Footer';
+import CompletedTaskTable from './components/CompletedTaskTable';
 
 // Import necessary hooks and services
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -62,6 +63,8 @@ const App: React.FC = () => {
               <Route path="newtask" Component={NewTask} />
               <Route path="tasks" Component={TaskTable} />
               <Route path="user" element={<UserCard />} />
+              <Route path="/household" element={<CompletedTaskTable/>} />
+
             </Routes>
           </ProtectedRoute>
           <Footer />
