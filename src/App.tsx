@@ -14,7 +14,6 @@ import CompletedTaskTable from './components/CompletedTaskTable';
 // Import necessary hooks and services
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import { FirebaseService } from './services/FirestoreServices';
 import LocalizationContext from './contexts/LocalizationContext';
 
 // Import necessary fonts
@@ -41,11 +40,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, unprotectedPa
   return <>{children}</>;
 };
 
-// Define the DEBUG handleClick function
-const handleClick = async () => {
-  const firebaseService = new FirebaseService();
-  firebaseService.getUserByEmail('simmsthecoder@gmail.com');
-}
+
 
 // Define the App component
 const App: React.FC = () => {

@@ -1,6 +1,7 @@
 # Chore Master
 ---------------------------------------
-This app is designed for a family to create and track chore completion on a regular calendar.  Its an elaborated Todo list exercise supporting multiple users in a mobile first design.
+This app is designed for a family to create and track chore completion on a regular calendar.  Its an elaborated Todo list exercise supporting multiple users via Firebase which offers the backend as a service. Firestore offers real time data watching so I can see when someone else updates a task and I can access the user data offered seemlessly from google user profiles.
+
 Stack: Typescript | Firebase | Firestore | Material UI | React
 
 ### Live hosted by Firebase
@@ -26,7 +27,8 @@ You will also see any lint errors in the console.
 - [x] Change table colors for tasks which are due. 
 - [x] Implement Manual Sign UP
 - [ ] Fix Profile View and updating.
-- [ ] Generate the completedTasks on task completion and add user.
-- [ ] Establish displayed name
-- [ ] Define CompletedTask Model
+- [x] Generate the completedTasks on task completion and add user.
+- [x] Establish displayed name
+- [x] Define CompletedTask Model
 - [ ] Refine CRUD methods
+- [ ] Enhance display of completed tasks
