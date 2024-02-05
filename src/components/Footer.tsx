@@ -7,13 +7,6 @@ export default function Footer() {
   const defaultTheme = createTheme();
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '70vh',
-        }}
-      >
         <Box
           component="footer"
           sx={{
@@ -34,7 +27,6 @@ export default function Footer() {
             </Typography>
           </Container>
         </Box>
-      </Box>
     </ThemeProvider>
   );
 }

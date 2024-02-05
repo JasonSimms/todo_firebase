@@ -5,15 +5,15 @@ import IconButton from "@mui/material/IconButton";
 
 export default function About() {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" >
+    <Box display="flex" flexDirection="column" alignItems="center">
       <Typography variant="h4" gutterBottom>
         About ChoreMaster
       </Typography>
       <Typography variant="body1" paragraph>
-        The goal of this demo piece is to explore the capabilities and methods
-        of Firebase, specifically user Authorization controls API, Firestore
-        noSQL DB and its real time update hooks and offline support and Material
-        UI.
+        "Chore Master" is a demonstration of Firebase's features,
+        focusing on User Authentication, real-time updates with noSQL Firestore, and
+        seamless offline functionality. It integrates Material UI to deliver a
+        modern and intuitive interface, ensuring a user-friendly experience.
       </Typography>
       <Box
         display="flex"
