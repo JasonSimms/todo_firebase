@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAuth } from '../contexts/AuthContext';
 
+import About from './About';
 
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -65,14 +66,18 @@ export default function SignInComponent() {
             alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            <LockOutlinedIcon />
-          </Avatar>
+          <About />
+          <br/>
+
+          
+          {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}> */}
+            {/* <LockOutlinedIcon /> */}
+          {/* </Avatar>
           <Typography component="h1" variant="h5">
             Sign in
-          </Typography>
+          </Typography> */}
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
+            {/* <TextField
               margin="normal"
               required
               fullWidth
@@ -81,8 +86,8 @@ export default function SignInComponent() {
               name="email"
               autoComplete="email"
               autoFocus
-            />
-            <TextField
+            /> */}
+            {/* <TextField
               margin="normal"
               required
               fullWidth
@@ -91,8 +96,8 @@ export default function SignInComponent() {
               type="password"
               id="password"
               autoComplete="current-password"
-            />
-            <Button
+            /> */}
+            {/* <Button
               type="submit"
               fullWidth
               variant="outlined"
@@ -100,10 +105,10 @@ export default function SignInComponent() {
               name="login"
             >
               login
-            </Button>
+            </Button> */}
             <Button fullWidth
               variant="contained"
-              sx={{ mt: 0, mb: 1 }}
+              sx={{ mt: 0, mb: 2 }}
               onClick={handleGoogle}
               startIcon={<Google />}
               color={'secondary'}>
@@ -113,14 +118,14 @@ export default function SignInComponent() {
               variant="contained"
               sx={{ mt: 0, mb: 2 }}
               onClick={() => handleLogin('max@gmail.com', 'maxPass')}
-              color={'warning'}>
+              color={'success'}>
               Sign in as Max Mustermann (DEMO)
             </Button>
             <Button fullWidth
               variant="contained"
               sx={{ mt: 0, mb: 2 }}
               onClick={() => handleLogin('erika@gmail.com', 'erikaPass')}
-              color={'warning'}>
+              color={'info'}>
               Sign in as Erika Mustermann (DEMO)
             </Button>
             <Grid container>
@@ -129,11 +134,11 @@ export default function SignInComponent() {
                   Forgot password?
                 </Link>
               </Grid> */}
-              <Grid item>
+              {/* <Grid item>
                 <Link href="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         </Box>
